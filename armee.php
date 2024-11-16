@@ -41,17 +41,18 @@ if (isset($_POST['emplacementmoleculesupprimer']) and !empty($_POST['emplacement
         // on enleve ces types de molécules dans les attaques lancées
         $ex = query('SELECT * FROM actionsattaques WHERE attaquant=\'' . $_SESSION['login'] . '\'');
         while ($actionsattaques = mysqli_fetch_array($ex)) {
-            $explosion = explode(";", $actionsattaques['troupes']);
-            $chaine = "";
-            for ($i = 1; $i < $nbClasses; $i++) {
-                if ($i == $_POST['emplacementmoleculesupprimer']) {
-                    $chaine = "0;";
-                } else {
-                    $chaine = $explosion[$i - 1] . ";";
-                }
-            }
-
-            query('UPDATE actionsattaques SET troupes=\'' . $chaine . '\' WHERE id=\'' . $actionsattaques['id'] . '\'');
+			if($actions['troupes'] != 'Espionnage'){
+				$explosion = explode(";", $actionsattaques['troupes']);
+				$chaine = "";
+				for ($i = 1; $i < $nbClasses; $i++) {
+					if ($i == $_POST['emplacementmoleculesupprimer']) {
+						$chaine = $chaine . "0;";
+					} else {
+						$chaine = $chaine . $explosion[$i - 1] . ";";
+					}
+				}
+				query('UPDATE actionsattaques SET troupes=\'' . $chaine . '\' WHERE id=\'' . $actionsattaques['id'] . '\'');
+			}
         }
 
         $information = "Vous avez supprimé la classe de molécules.";
